@@ -1,0 +1,6 @@
+[submodule "linux"]
+	path = linux
+	url = git://github.com/torvalds/linux.git
+[submodule "openembedded_linux_recipes"]
+	path = openembedded_linux_recipes
+	url = git://github.com/Scorpiion/openembedded_linux_recipes.git
