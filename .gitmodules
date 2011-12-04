@@ -1,6 +1,0 @@
-[submodule "openembedded_linux_recipes"]
-	path = openembedded_linux_recipes
-	url = git://github.com/Scorpiion/openembedded_linux_recipes.git
-[submodule "linux-omap"]
-	path = linux-omap
-	url = git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
