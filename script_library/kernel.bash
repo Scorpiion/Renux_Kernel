@@ -6,8 +6,6 @@
 # This program is free software under the GPL license, please 
 # see the license.txt and gpl.txt files in the root directory
 
-alias echo='echo -e'
-
 function kernel.checkConfig() {
   if [ ! "$CONFIG" == "y" ] ; then
     echo "Error: No build config file, please check the file \"settings/build.conf\" and make sure there is a line saying CONFIG=\"y\"."
@@ -62,14 +60,14 @@ function kernel.patch() {
 
 function kernel.clean() {
   kernel.checkConfig
-  echo "Clean kernel..."
+  echo -e "Clean kernel...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" mrproper $extraFlags
 }
 
 function kernel.defconfig() {
   kernel.checkConfig
-  echo "Configure kernel...\n"
+  echo -e "Configure kernel...\n"
   sleep 1
   if [ -e "${patchDir}/defconfigs/beagleboard/defconfig" ] ; then
     cp ${patchDir}/defconfigs/beagleboard/defconfig arch/arm/configs/$defconfig
@@ -81,41 +79,42 @@ function kernel.defconfig() {
 
 function kernel.menuconfig() {
   kernel.checkConfig
-  echo "Menuconfig...\n"
+  echo -e "Menuconfig...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" menuconfig $extraFlags
 }
 
 function kernel.compileUimage() {
   kernel.checkConfig
-  echo "Compile kernel...\n"
+  echo -e "Compile kernel...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" uImage $extraFlags
 }
 
 function kernel.compileModules() {
   kernel.checkConfig
-  echo "Compile modules...\n"
+  echo -e "Compile modules...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" modules $extraFlags
 }
 
 function kernel.compileFirmware() {
   kernel.checkConfig
-  echo "Compile firmware...\n"
+  echo -e "Compile firmware...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" firmware $extraFlags
 }
 
 function kernel.compileHeaders() {
   kernel.checkConfig
-  echo "Compile headers...\n"
+  echo -e "Compile headers...\n"
   sleep 1
   mkdir -p $workDir/tmp
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" headers_install INSTALL_HDR_PATH=$workDir/tmp
   cd $workDir
   tar -czf linux-headers.tar.gz $workDir/tmp/*
   rm -rf $workDir/tmp
+  mv linux-headers.tar.gz $outputDir
 }
 
 function kernel.install() {
@@ -124,19 +123,20 @@ function kernel.install() {
     mkdir -p $outputDir/boot 
   fi
   cp arch/arm/boot/uImage $outputDir/boot
-  echo "Installing modules...\n"
+  echo -e "Installing modules...\n"
   make ARCH=arm INSTALL_MOD_PATH=$outputDir modules_install
-  echo "Installing firmware...\n"
+  echo -e "Installing firmware...\n"
   make ARCH=arm INSTALL_MOD_PATH=$outputDir firmware_install
-  echo "Creating tar.gz package..."
+  echo -e "Creating tar.gz package...\n"
   cd $outputDir
   tar -czf renux_kernel.tar.gz *
 }
 
-function kernel.deb() {
-  kernel.checkConfig
-  echo "Building debian kernel package...\n"
-  sleep 1
-  make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" KBUILD_DEBARCH=armel KDEB_PKGVERSION="Renux" deb-pkg
-}
+# TODO later
+# function kernel.deb() {
+#   kernel.checkConfig
+#   echo "Building debian kernel package...\n"
+#   sleep 1
+#   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" KBUILD_DEBARCH=armel KDEB_PKGVERSION="Renux" deb-pkg
+# }
 
