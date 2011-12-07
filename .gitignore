@@ -1,4 +1,5 @@
 # Files that git should ignore
 
 *~
+/output
 
