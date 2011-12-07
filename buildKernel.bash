@@ -24,7 +24,6 @@ kernel.compileUimage
 kernel.compileModules
 kernel.compileFirmware
 kernel.compileHeaders
-kernel.deb
 kernel.install
 kernel.leaveDir
 
