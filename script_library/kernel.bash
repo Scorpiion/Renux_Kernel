@@ -40,14 +40,14 @@ function kernel.patch() {
   echo -e "Applied patches:\n" > /tmp/patchCommit.txt
   cd $patchDir
   for dir in * ; do
-    if [[ -d "$dir" ]] && [[ "$dir" != "defconfigs" ]] ; then
+    if [[ -d "$dir" ]] ; then
       echo "Applying paches from patch dir \"${dir##*/}\""
       cd $dir
       for patch in *.patch ; do
-	cd $kernelDir
-	echo "  Applying patch \"$patch\""
-	patch -p1 -s < ${patchDir}/${dir}/${patch}
-	echo "patch -p1 -s < ${patchDir}/${dir}/${patch}" >> /tmp/patchCommit.txt
+        cd $kernelDir
+      	echo "  Applying patch \"$patch\""
+      	patch -p1 -s < ${patchDir}/${dir}/${patch}
+      	echo "patch -p1 -s < ${patchDir}/${dir}/${patch}" >> /tmp/patchCommit.txt
       done
       echo ""
     fi
@@ -69,8 +69,8 @@ function kernel.defconfig() {
   kernel.checkConfig
   echo -e "Configure kernel...\n"
   sleep 1
-  if [ -e "${patchDir}/defconfigs/beagleboard/defconfig" ] ; then
-    cp ${patchDir}/defconfigs/beagleboard/defconfig arch/arm/configs/$defconfig
+  if [ -e "${patchDir}/defconfig" ] ; then
+    cp ${patchDir}/defconfig arch/arm/configs/$defconfig
   else
     cp $workDir/settings/omap3_renux_defconfig arch/arm/configs/$defconfig
   fi
@@ -89,6 +89,7 @@ function kernel.compileUimage() {
   echo -e "Compile kernel...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" uImage $extraFlags
+  if [ "$?" != "0" ] ; then exit; fi
 }
 
 function kernel.compileModules() {
@@ -96,6 +97,7 @@ function kernel.compileModules() {
   echo -e "Compile modules...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" modules $extraFlags
+  if [ "$?" != "0" ] ; then exit; fi
 }
 
 function kernel.compileFirmware() {
@@ -103,32 +105,51 @@ function kernel.compileFirmware() {
   echo -e "Compile firmware...\n"
   sleep 1
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" firmware $extraFlags
+  if [ "$?" != "0" ] ; then exit; fi
 }
 
 function kernel.compileHeaders() {
   kernel.checkConfig
-  echo -e "Compile headers...\n"
+  echo -e "\nCompile headers..."
   sleep 1
   mkdir -p $workDir/tmp
   make -j $JN ARCH=arm CROSS_COMPILE="ccache ${CC}" headers_install INSTALL_HDR_PATH=$workDir/tmp
-  cd $workDir
-  tar -czf linux-headers.tar.gz $workDir/tmp/*
-  rm -rf $workDir/tmp
+  if [ "$?" != "0" ] ; then exit; fi
+  cd $workDir/tmp
+  if [ -e linux-headers.tar.gz ] ; then
+    rm linux-headers.tar.gz
+  fi
+  tar -czf linux-headers.tar.gz *
   mv linux-headers.tar.gz $outputDir
+  cd $workDir
+  rm -rf $workDir/tmp
+  kernel.enterDir
 }
 
 function kernel.install() {
-  echo "Installing uImage $outputDir/boot..."
+  echo -e "\nInstalling uImage $outputDir/boot..."
   if [ ! -e "$outputDir/boot" ] ; then 
     mkdir -p $outputDir/boot 
+  else
+    rm -rf $outputDir/boot/*
   fi
   cp arch/arm/boot/uImage $outputDir/boot
-  echo -e "Installing modules...\n"
+
+  if [ -d $outputDir/lib ] ; then
+    rm -rf $outputDir/lib/*
+  fi
+  echo -e "\nInstalling modules..."
   make ARCH=arm INSTALL_MOD_PATH=$outputDir modules_install
-  echo -e "Installing firmware...\n"
+  if [ "$?" != "0" ] ; then exit; fi
+  echo -e "\nInstalling firmware..."
   make ARCH=arm INSTALL_MOD_PATH=$outputDir firmware_install
-  echo -e "Creating tar.gz package...\n"
+  if [ "$?" != "0" ] ; then exit; fi
+
+  echo -e "\nCreating tar.gz package..."
   cd $outputDir
+  if [ -e renux_kernel.tar.gz ] ; then
+    rm renux_kernel.tar.gz
+  fi
   tar -czf renux_kernel.tar.gz *
 }
 

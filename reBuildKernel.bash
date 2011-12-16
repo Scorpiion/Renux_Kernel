@@ -10,13 +10,16 @@
 source settings/build.conf
 source script_library/kernel.bash
 
-mkdir $outputDir
+if [ ! -d $outputDir ] ; then
+  mkdir $outputDir
+fi
+
+export JN=1
+
 kernel.enterDir
-# kernel.menuconfig
-# kernel.compileUimage
-# kernel.compileModules
-# kernel.compileFirmware
-# kernel.deb
+kernel.compileUimage
+kernel.compileModules
+kernel.compileFirmware
 kernel.install
 kernel.leaveDir
 
