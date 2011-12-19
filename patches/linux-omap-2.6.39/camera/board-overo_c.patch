@@ -1,0 +1,12 @@
+--- /home/robert/New_Development/Renux/Renux_build/Renux_Kernel/linux-omap/arch/arm/mach-omap2/board-overo.c	2011-12-19 09:00:33.447613792 +0100
++++ arch/arm/mach-omap2/board-overo.c	2011-12-19 17:17:04.266987753 +0100
+@@ -742,6 +742,9 @@
+ 
+ #ifdef CONFIG_OMAP_MUX
+ static struct omap_board_mux board_mux[] __initdata = {
++  	OMAP3_MUX(CAM_PCLK, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
++	OMAP3_MUX(CAM_HS, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
++	OMAP3_MUX(CAM_VS, OMAP_MUX_MODE0 | OMAP_PIN_INPUT),
+ 	{ .reg_offset = OMAP_MUX_TERMINATOR },
+ };
+ #endif
