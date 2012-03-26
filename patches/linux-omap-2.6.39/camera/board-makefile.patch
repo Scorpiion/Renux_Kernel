@@ -1,18 +1,22 @@
---- /home/robert/New_Development/Renux_fucked_up/Renux_build/Renux_Kernel/linux-omap/arch/arm/mach-omap2/Makefile	2011-12-19 22:34:25.377048184 +0100
-+++ arch/arm/mach-omap2/Makefile	2011-12-13 13:15:38.541564715 +0100
-@@ -182,6 +182,7 @@
- 					   hsmmc.o
- obj-$(CONFIG_MACH_OMAP_APOLLON)		+= board-apollon.o
- obj-$(CONFIG_MACH_OMAP3_BEAGLE)		+= board-omap3beagle.o \
-+					   board-omap3beagle-camera.o \
- 					   hsmmc.o
- obj-$(CONFIG_MACH_DEVKIT8000)     	+= board-devkit8000.o \
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index 512b152..fdc2e45 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -179,6 +179,7 @@ obj-$(CONFIG_MACH_OMAP_2430SDP)             += board-2430sdp.o \
+                                           hsmmc.o
+ obj-$(CONFIG_MACH_OMAP_APOLLON)                += board-apollon.o
+ obj-$(CONFIG_MACH_OMAP3_BEAGLE)                += board-omap3beagle.o \
++             board-omap3beagle-camera.o \
+                                           hsmmc.o
+ obj-$(CONFIG_MACH_DEVKIT8000)          += board-devkit8000.o \
                                             hsmmc.o
-@@ -193,6 +194,7 @@
+@@ -190,6 +191,7 @@ obj-$(CONFIG_MACH_OMAP3530_LV_SOM)      += board-omap3logic.o \
  obj-$(CONFIG_MACH_OMAP3_TORPEDO)        += board-omap3logic.o \
- 					   hsmmc.o
- obj-$(CONFIG_MACH_OVERO)		+= board-overo.o \
-+					   board-overo-eslCam.o \
- 					   hsmmc.o
- obj-$(CONFIG_MACH_OMAP3EVM)		+= board-omap3evm.o \
- 					   hsmmc.o
+                                           hsmmc.o
+ obj-$(CONFIG_MACH_OVERO)               += board-overo.o \
++             board-overo-eslCam.o \
+                                           hsmmc.o
+ obj-$(CONFIG_MACH_OMAP3EVM)            += board-omap3evm.o \
+                                           hsmmc.o
+
+
